@@ -1,21 +1,21 @@
-.def temp = r21
-start:	
-	ldi r16, 0xff
-	out ddrb, r16
-	out ddrd, r16
-	out ddrc, r16
+.def temp = r21 ;Se le da un nombre al registro
+start:
+	ldi r16, 0xff ;Se declara el registro con constante de 8 bits
+	out ddrb, r16 ;Se le da direccion de salida al registro por el puerto B
+	out ddrd, r16 ;Se le da direccion de salida al registro por el puerto B
+	out ddrc, r16 ;Se le da direccion de salida al registro por el puerto B
 	out spl, r16
-	ldi r17, 0
+	ldi r17, 0 ;Se declara el registro
 reset: 
-	lds temp, WDTCSR
-	ori temp, (1<<WDCE) | (1<<WDE)
-	sts WDTCSR, temp
+	lds temp, WDTCSR ;Carga un byte desde el espacio de los datos
+	ori temp, (1<<WDCE) | (1<<WDE) ;Realiza el OR lógico entre el contenido del registro Rd y una constante
+	sts WDTCSR, temp ;Almacena directamente en el espacio de datos
 	ldi temp, (1<<WDE) | (1<<WDP0) | (1<<WDP3)
 	sts WDTCSR, temp
 
-	in r20, pinc
-	cpi r20, 1
-	breq suma
+	in r20, pinc ;Carga datos en el registro 20 del pin C
+	cpi r20, 1 ;Se compara el registro si no es 1
+	breq suma ;Salto a etiqueta
 	cpi r17, 0
 	breq ceroe
 	cpi r17, 1
@@ -38,14 +38,14 @@ reset:
 	breq nuevee	
 rjmp start
 suma:
-	wdr
+	wdr ;Watchdog reset
 	in r16, pinc
-	cpi r16,0	
+	cpi r16, 0	
 	brne suma	
-	inc r17	
+	inc r17	;Incrementa 
 	rjmp reset
 ceroe:
-	call cero
+	call cero ;Llama a la etiqueta
 	rjmp reset
 unoe:
 	call uno
